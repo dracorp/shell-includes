@@ -37,18 +37,19 @@
 #
 ################################################################################
 
-usage() {
-    while IFS= read -r line || [ -n "$line" ]
-    do
+usage() { #{{{
+    while IFS= read -r line || [ -n "$line" ]; do
         case "$line" in
             '#!'*) # Shebang line
+                ;;
+            '#='*) # comment from header
                 ;;
             ''|'##'*|[!#]*) # End of comments
                 exit "${1:-0}"
                 ;;
             *) # Comment line
-                printf '%s\n' "$line" >&2 # Remove comment prefix
+                printf '%s\n' "${line:2}" >&2 # Remove comment prefix
                 ;;
         esac
     done < "$0"
-}
+} #}}}
