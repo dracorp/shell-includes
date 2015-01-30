@@ -1,10 +1,11 @@
 #!/bin/sh
 # NAME
-#        usage.sh - Function to print documentation like this one
+#        help.sh - Function to print documentation like this one
 #
 # SYNOPSIS
-#        . usage.sh
-#        usage [EXIT_CODE]
+#        . help.sh
+#        help [EXIT_CODE]
+#        usage
 #
 # DESCRIPTION
 #        Prints comments of the form "# This is a comment" at the start of the
@@ -37,7 +38,9 @@
 #
 ################################################################################
 
-usage() { #{{{
+help() { #{{{
+    local header
+    local pre_header=''
     while IFS= read -r line || [ -n "$line" ]; do
         case "$line" in
             '#!'*) # Shebang line
@@ -45,11 +48,34 @@ usage() { #{{{
             '#='*) # comment from header
                 ;;
             ''|'##'*|[!#]*) # End of comments
-                exit "${1:-0}"
+                return #"${1:-0}"
                 ;;
             *) # Comment line
-                printf '%s\n' "${line:2}" >&2 # Remove comment prefix
+                line=${line:2} # Remove comment prefix
+                if [[ "$1" = usage ]]; then
+                    # print only usage
+                    if [[ $pre_header = SYNOPSIS ]]; then
+                        return
+                    fi
+                    if [[ "${line}" =~ ^[A-Z\s]+$ ]]; then
+                        header=${line}
+                    fi
+                    if [[ "$header" = SYNOPSIS ]]; then
+                        if [[ "$line" = SYNOPSIS ]]; then
+                            printf '%s\n' 'Usage:' >&2
+                        else
+                            printf '%s\n' "${line}" >&2
+                        fi
+                    else
+                        pre_header=$header
+                    fi
+                else
+                    printf '%s\n' "${line}" >&2
+                fi
                 ;;
         esac
     done < "$0"
-} #}}}
+} # end of function help }}}
+usage() { #{{{
+    help usage
+} # end of function usage }}}
