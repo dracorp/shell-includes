@@ -1,11 +1,11 @@
 #!/bin/sh
 # NAME
-#        help.sh - Function to print documentation like this one
+#        usage.sh - Function to print documentation like this one
 #
 # SYNOPSIS
-#        . help.sh
-#        help [EXIT_CODE]
-#        usage
+#        . usage.sh
+#        _help [EXIT_CODE]
+#        _usage [EXIT_CODE]
 #
 # DESCRIPTION
 #        Prints comments of the form "# This is a comment" at the start of the
@@ -18,7 +18,7 @@
 #        Returns from the sourcing file with the given exit code (default 0).
 #
 # BUGS
-#        https://github.com/l0b0/shell-includes/issues
+#        https://github.com/dracorp/shell-includes/issues
 #
 # COPYRIGHT AND LICENSE
 #        Copyright (C) 2010-2013 Victor Engmark
@@ -38,9 +38,14 @@
 #
 ################################################################################
 
-help() { #{{{
-    local header
+_help() { #{{{
+    local header line retval
     local pre_header=''
+    local lib_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+    if [[ ! -r "$0" ]]; then
+        printf '%s\n' "Wrong usage of library ${lib_path}! Use it in a shell script." >&2
+        return 1
+    fi
     while IFS= read -r line || [ -n "$line" ]; do
         case "$line" in
             '#!'*) # Shebang line
@@ -48,15 +53,20 @@ help() { #{{{
             '#='*) # comment from header
                 ;;
             ''|'##'*|[!#]*) # End of comments
-                return #"${1:-0}"
+                retval=$1
+                if [[ ! $retval =~ ^-?[0-9] ]]; then
+                    retval=0
+                fi
+                if [[ "$_" != "$0" ]]; then
+                    exit $retval
+                else
+                    return $retval
+                fi
                 ;;
             *) # Comment line
                 line=${line:2} # Remove comment prefix
                 if [[ "$1" = usage ]]; then
                     # print only usage
-                    if [[ $pre_header = SYNOPSIS ]]; then
-                        return
-                    fi
                     if [[ "${line}" =~ ^[A-Z\s]+$ ]]; then
                         header=${line}
                     fi
@@ -65,6 +75,15 @@ help() { #{{{
                             printf '%s\n' 'Usage:' >&2
                         else
                             printf '%s\n' "${line}" >&2
+                            retval=$2
+                            if [[ ! $retval =~ ^-?[0-9] ]]; then
+                                retval=0
+                            fi
+                            if [[ "$_" != "$0" ]]; then
+                                exit $retval
+                            else
+                                return $retval
+                            fi
                         fi
                     else
                         pre_header=$header
@@ -75,7 +94,14 @@ help() { #{{{
                 ;;
         esac
     done < "$0"
-} # end of function help }}}
-usage() { #{{{
-    help usage
-} # end of function usage }}}
+} #}}}
+_usage() { #{{{
+    _help usage $1
+} #}}}
+_version() {
+    if [[ -n "$PROGRAM_VERSION" && -n "$PROGRAM_NAME" ]]; then
+        printf '%s %s\n' $PROGRAM_NAME $PROGRAM_VERSION
+    else
+        return 1
+    fi
+}
