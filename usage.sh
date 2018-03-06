@@ -57,11 +57,7 @@ _help() { #{{{
                 if [[ ! $retval =~ ^-?[0-9] ]]; then
                     retval=0
                 fi
-                if [[ "$_" != "$0" ]]; then
-                    exit $retval
-                else
-                    return $retval
-                fi
+                exit $retval
                 ;;
             *) # Comment line
                 line=${line:2} # Remove comment prefix
@@ -79,11 +75,7 @@ _help() { #{{{
                             if [[ ! $retval =~ ^-?[0-9] ]]; then
                                 retval=0
                             fi
-                            if [[ "$_" != "$0" ]]; then
-                                exit $retval
-                            else
-                                return $retval
-                            fi
+                            exit $retval
                         fi
                     else
                         pre_header=$header
@@ -99,9 +91,21 @@ _usage() { #{{{
     _help usage $1
 } #}}}
 _version() {
-    if [[ -n "$PROGRAM_VERSION" && -n "$PROGRAM_NAME" ]]; then
+    if [[ -z "$PROGRAM_VERSION" ]]; then
+        local PROGRAM_VERSION=undef
+    fi
+    if [[ -n "$PROGRAM_NAME" ]]; then
         printf '%s %s\n' $PROGRAM_NAME $PROGRAM_VERSION
+        if [[ ! -r "$0" ]]; then
+            return 0
+        else
+            exit 0
+        fi
     else
-        return 1
+        if [[ ! -r "$0" ]]; then
+            return 1
+        else
+            exit 1
+        fi
     fi
 }
