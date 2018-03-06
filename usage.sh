@@ -52,7 +52,7 @@ _help() { #{{{
                 ;;
             '#='*) # comment from header
                 ;;
-            ''|'##'*|[!#]*) # End of comments
+            ''|'##'*|'#='*|[!#]*) # End of comments
                 retval=$1
                 if [[ ! $retval =~ ^-?[0-9] ]]; then
                     retval=0
@@ -68,7 +68,7 @@ _help() { #{{{
                     fi
                     if [[ "$header" = SYNOPSIS ]]; then
                         if [[ "$line" = SYNOPSIS ]]; then
-                            printf '%s\n' 'Usage:' >&2
+                            printf '%s' 'Usage:' >&2
                         else
                             printf '%s\n' "${line}" >&2
                             retval=$2
@@ -90,12 +90,12 @@ _help() { #{{{
 _usage() { #{{{
     _help usage $1
 } #}}}
-_version() {
+_version() { #{{{
     if [[ -z "$PROGRAM_VERSION" ]]; then
         local PROGRAM_VERSION=undef
     fi
     if [[ -n "$PROGRAM_NAME" ]]; then
-        printf '%s %s\n' $PROGRAM_NAME $PROGRAM_VERSION
+        printf '%s\n' "$PROGRAM_NAME version $PROGRAM_VERSION"
         if [[ ! -r "$0" ]]; then
             return 0
         else
@@ -108,4 +108,4 @@ _version() {
             exit 1
         fi
     fi
-}
+} #}}}
