@@ -12,7 +12,7 @@
 #        separator, see verbose_print.sh.
 #
 # BUGS
-#        https://github.com/l0b0/shell-includes/issues
+#        https://github.com/dracorp/shell-includes/issues
 #
 # COPYRIGHT AND LICENSE
 #        Copyright (C) 2013 Victor Engmark

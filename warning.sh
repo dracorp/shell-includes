@@ -11,7 +11,7 @@
 #        terminal.
 #
 # BUGS
-#        https://github.com/l0b0/shell-includes/issues
+#        https://github.com/dracorp/shell-includes/issues
 #
 # COPYRIGHT AND LICENSE
 #        Copyright (C) 2010-2013 Victor Engmark

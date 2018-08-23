@@ -1,4 +1,4 @@
-#!/bin/sh
+#===============================================================================
 # NAME
 #        error.sh - Function to print an error message and exit
 #
@@ -12,7 +12,7 @@
 #        (default 1).
 #
 # BUGS
-#        https://github.com/l0b0/shell-includes/issues
+#        https://github.com/dracorp/shell-includes/issues
 #
 # COPYRIGHT AND LICENSE
 #        Copyright (C) 2010-2013 Victor Engmark

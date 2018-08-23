@@ -1,4 +1,4 @@
-#!/bin/sh
+#===============================================================================
 # NAME
 #        usage.sh - Function to print documentation like this one
 #
@@ -6,6 +6,7 @@
 #        . usage.sh
 #        _help [EXIT_CODE]
 #        _usage [EXIT_CODE]
+#        _version
 #
 # DESCRIPTION
 #        Prints comments of the form "# This is a comment" at the start of the
@@ -36,9 +37,13 @@
 #        You should have received a copy of the GNU General Public License along
 #        with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-################################################################################
+#===============================================================================
 
-_help() { #{{{
+if echo $SHELL | grep -q ksh; then
+    return 1
+fi
+
+_help() {
     local header line retval
     local pre_header=''
     local lib_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
@@ -86,11 +91,13 @@ _help() { #{{{
                 ;;
         esac
     done < "$0"
-} #}}}
-_usage() { #{{{
+}
+
+_usage() {
     _help usage $1
-} #}}}
-_version() { #{{{
+}
+
+_version() {
     if [[ -z "$PROGRAM_VERSION" ]]; then
         local PROGRAM_VERSION=undef
     fi
@@ -108,4 +115,12 @@ _version() { #{{{
             exit 1
         fi
     fi
-} #}}}
+}
+
+usage() {
+    _usage "$@"
+}
+
+version() {
+    _version "$@"
+}
