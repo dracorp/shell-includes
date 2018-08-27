@@ -29,10 +29,6 @@
 #
 #===============================================================================
 
-if echo $SHELL | grep -q ksh; then
-    return 1
-fi
-
 : ${USE_COLOR=y}
 # check if messages are to be printed using color {{{
 if [[ -t 2 && ! $USE_COLOR = "n" ]]; then

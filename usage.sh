@@ -39,10 +39,6 @@
 #
 #===============================================================================
 
-if echo $SHELL | grep -q ksh; then
-    return 1
-fi
-
 _help() {
     local header line retval
     local pre_header=''
